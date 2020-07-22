@@ -50,7 +50,9 @@ Wait until you see the following lines:
 
 The server is now started and you can access the management console here: http://localhost:8180/
 
-TODO...
+You can now create the client by importing the `keycloak/poc-front-end.json` file.
+
+At this stage you can also create a user. The PoC assumes a username of `user1` with a password of `password`.
 
 ## NestJS - The REST API
 

@@ -69,3 +69,9 @@ $ cd react/poc-front-end
 $ npm install
 $ npm start
 ```
+
+# Acknowledgements
+
+The following credits for photos from [Unsplash](https://unsplash.com/):
+
+* <span>Photo by <a href="https://unsplash.com/@shotlist?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Shotlist</a> on <a href="https://unsplash.com/s/photos/table-mountain?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>

@@ -56,8 +56,16 @@ At this stage you can also create a user. The PoC assumes a username of `user1` 
 
 ## NestJS - The REST API
 
-TODO...
+```bash
+$ cd nest/poc-rest-api
+$ npm install
+$ npm run start
+```
 
 ## React - The Front-End
 
-TODO...
+```bash
+$ cd react/poc-front-end
+$ npm install
+$ npm start
+```

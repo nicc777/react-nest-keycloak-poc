@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, UnauthorizedException, Logger } from "@nestjs/common";
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-http-bearer';
 import { AuthService } from "./auth.service";
@@ -9,12 +9,11 @@ export class HttpStrategy extends PassportStrategy(Strategy) {
       super();
     }
     
-    async validate(token: string){
-        let user;
-        user = await this.authService.validateUser(token);
-        if (!user){
-            throw new UnauthorizedException();
-        }
-        return user;
+    private readonly logger = new Logger(HttpStrategy.name);
+
+    async validate(token: any, done): Promise<any>{
+        // TODO validate token using this.authService
+        this.logger.log('** HttpStrategy::validate(): validating token: token=' + String(token));
+        done(new UnauthorizedException(), false);
     }
 }

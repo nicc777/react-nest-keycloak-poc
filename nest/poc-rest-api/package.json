@@ -27,6 +27,7 @@
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^4.5.12",
+    "@types/passport-http-bearer": "^1.0.35",
     "class-validator": "^0.12.2",
     "controller": "^1.0.0",
     "passport": "^0.4.1",

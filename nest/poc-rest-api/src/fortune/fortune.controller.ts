@@ -25,9 +25,9 @@ export class FortuneController {
         description: 'The retrieved fortune',
         type: Fortune,
     })
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard('bearer'))
     getFortune(): Fortune {
-        this.logger.log('** Requesting a fortune');
+        this.logger.log('** FortuneController::getFortune(): Requesting a fortune');
         return this.fortuneService.pickFortune();
     }
 

@@ -52,6 +52,8 @@ class LandingPage extends React.Component {
     this.state = { fortune: null, apiAlert: false };
     this.retryFetch = this.retryFetch.bind(this);
     this.fetchFortune = this.fetchFortune.bind(this);
+    this.renderRefreshButton = this.renderRefreshButton.bind(this);
+    this.renderFortune = this.renderFortune.bind(this);
   }
 
   componentDidMount() {
@@ -85,7 +87,7 @@ class LandingPage extends React.Component {
 
   retryFetch() {
     console.log('retry fetch');
-    this.setState({apiAlert: false});
+    this.setState({ fortune: null, apiAlert: false });
     this.fetchFortune(true);
   }
 
@@ -105,20 +107,37 @@ class LandingPage extends React.Component {
     }
   }
 
-  renderFortune(fortune) {
-    return (
-      <Card style={{ width: '40rem' }}>
-        <CardImg
-          top
-          src={require("assets/img/fortune_cookies.jpg")}
-          alt="Fortune Cookie Image" />
-        <CardBody>
-          <CardTitle>Author: {fortune.fortuneAuthor}</CardTitle>
-          <CardText>{fortune.fortuneText}</CardText>
-          {/* <Button color="primary">Go somewhere</Button> */}
-        </CardBody>
-      </Card>
+  renderRefreshButton() {
+    if (this.state.apiAlert == true) {
+      return null;
+    } else {
+      return (
+        <Button className="btn-round" color="primary" outline onClick={this.retryFetch}>
+          <i className="fa fa-refresh fa-lg" /> Refresh
+        </Button>
     );
+    }
+    
+  }
+
+  renderFortune() {
+    if (this.state.fortune !== null) {
+      return (
+        <Card style={{ width: '40rem' }}>
+          <CardImg
+            top
+            src={require("assets/img/fortune_cookies.jpg")}
+            alt="Fortune Cookie Image" />
+          <CardBody>
+            <CardTitle>Author: {this.state.fortune.fortuneAuthor}</CardTitle>
+            <CardText>{this.state.fortune.fortuneText}</CardText>
+            {/* <Button color="primary">Go somewhere</Button> */}
+          </CardBody>
+        </Card>
+      );
+    } else {
+      return this.renderLoginButton();
+    }
   }
 
   renderAlert() {
@@ -135,15 +154,10 @@ class LandingPage extends React.Component {
 
   render() {
 
-    let secretTextHolder = this.renderLoginButton();
-    if (this.state.fortune !== null) {
-      secretTextHolder = this.renderFortune(this.state.fortune);
-    }
-
     return (
       <>
         <ExamplesNavbar />
-        <LandingPageHeader />
+        {/* <LandingPageHeader /> */}
         <div className="main">
           <div className="section text-center">
             <Container>
@@ -152,7 +166,8 @@ class LandingPage extends React.Component {
                   {this.renderAlert()}
                   <h2 className="title">The secret...</h2>
                   <h5 className="description">
-                    {secretTextHolder}
+                    {this.renderFortune()}
+                    {this.renderRefreshButton()}
                   </h5>
                   <br />
                 </Col>

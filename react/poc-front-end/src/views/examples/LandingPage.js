@@ -73,7 +73,13 @@ class LandingPage extends React.Component {
           })
           .then(data => {
             console.log('data=', data);
-            this.setState({ fortune: data, apiAlert: false });
+            if (data.statusCode >= 200 && data.statusCode < 300) {
+              // success
+              this.setState({ fortune: data, apiAlert: false });
+            } else {
+              // some error condition
+              console.log('The server returned an error!!');
+            }
           })
           .catch((error) => {
             console.error('Fetch Error:', error);

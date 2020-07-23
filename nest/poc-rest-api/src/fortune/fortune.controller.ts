@@ -1,4 +1,4 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
 import {
     ApiBearerAuth,
     ApiOperation,
@@ -7,6 +7,7 @@ import {
 } from '@nestjs/swagger';
 import { FortuneService } from './fortune.service';
 import { Fortune } from '../fortune';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('fortune')
 export class FortuneController {
@@ -24,6 +25,7 @@ export class FortuneController {
         description: 'The retrieved fortune',
         type: Fortune,
     })
+    @UseGuards(AuthGuard())
     getFortune(): Fortune {
         this.logger.log('** Requesting a fortune');
         return this.fortuneService.pickFortune();

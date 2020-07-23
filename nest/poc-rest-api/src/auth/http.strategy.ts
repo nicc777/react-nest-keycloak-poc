@@ -14,6 +14,13 @@ export class HttpStrategy extends PassportStrategy(Strategy) {
     async validate(token: any, done): Promise<any>{
         // TODO validate token using this.authService
         this.logger.log('** HttpStrategy::validate(): validating token: token=' + String(token));
-        done(new UnauthorizedException(), false);
+        const authResult: any = await this.authService.validateUser(token);
+        this.logger.log('** HttpStrategy::validate(): authResult=' + String(authResult));
+        if (authResult !== null ) {
+            this.logger.log('** HttpStrategy::validate(): token validation passed');
+            return done(null, 'user', { scope: 'all' });
+        }
+        this.logger.log('** HttpStrategy::validate(): token validation failed');
+        return done(new UnauthorizedException(), false);
     }
 }

@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { FortuneController } from './fortune/fortune.controller';
-import { FortuneService } from './fortune/fortune.service';
+import { FortuneModule } from './fortune/fortune.module';
 
 @Module({
-  imports: [],
-  controllers: [FortuneController],
-  providers: [FortuneService],
+  imports: [FortuneModule],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

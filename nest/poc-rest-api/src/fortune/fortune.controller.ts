@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import {
     ApiBearerAuth,
     ApiOperation,
@@ -15,6 +15,8 @@ export class FortuneController {
         private readonly fortuneService: FortuneService
     ) { }
 
+    private readonly logger = new Logger(FortuneController.name);
+
     @Get()
     @ApiOperation({ summary: 'Get a Fortune' })
     @ApiResponse({
@@ -23,6 +25,7 @@ export class FortuneController {
         type: Fortune,
     })
     getFortune(): Fortune {
+        this.logger.log('** Requesting a fortune');
         return this.fortuneService.pickFortune();
     }
 

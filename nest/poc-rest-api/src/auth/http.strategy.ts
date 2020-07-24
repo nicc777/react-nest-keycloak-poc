@@ -12,7 +12,6 @@ export class HttpStrategy extends PassportStrategy(Strategy) {
     private readonly logger = new Logger(HttpStrategy.name);
 
     async validate(token: any, done): Promise<any>{
-        // TODO validate token using this.authService
         this.logger.log('** HttpStrategy::validate(): validating token: token=' + String(token));
         const authResult: any = await this.authService.validateUser(token);
         this.logger.log('** HttpStrategy::validate(): authResult=' + String(authResult));

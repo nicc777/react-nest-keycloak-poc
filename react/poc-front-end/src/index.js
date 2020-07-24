@@ -31,13 +31,17 @@ import ManagedLandingPage from "views/examples/LandingPage.js";
 import ProfilePage from "views/examples/ProfilePage.js";
 import RegisterPage from "views/examples/RegisterPage.js";
 // others
+import { KeycloakProvider } from '@react-keycloak/web'
+import keycloak from './keycloak'
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route path="/" render={(props) => <ManagedLandingPage {...props} />} />
-      <Redirect to="/" />
-    </Switch>
-  </BrowserRouter>,
+  <KeycloakProvider keycloak={keycloak}>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/" render={(props) => <ManagedLandingPage {...props} />} />
+        <Redirect to="/" />
+      </Switch>
+    </BrowserRouter>
+  </KeycloakProvider>,
   document.getElementById("root")
 );

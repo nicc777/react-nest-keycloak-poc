@@ -45,19 +45,28 @@ import DemoFooter from "components/Footers/DemoFooter.js";
 
 // Other
 import sessionManager from '../../hoc/session-manager';
+import Keycloak from 'keycloak-js';
 
 class LandingPage extends React.Component {
   constructor(props) {
     super(props);
+    console.log('props=', props);
     this.state = { fortune: null, apiAlert: false };
     this.retryFetch = this.retryFetch.bind(this);
     this.fetchFortune = this.fetchFortune.bind(this);
     this.renderRefreshButton = this.renderRefreshButton.bind(this);
     this.renderFortune = this.renderFortune.bind(this);
+    this.redirectToLogin = this.redirectToLogin.bind(this);
+    this.keycloak = Keycloak({
+      url: 'http://localhost:8180/auth/',
+      realm: 'master',
+      clientId: 'poc-front-end'
+    });
   }
 
   componentDidMount() {
     this.fetchFortune();
+    // this.keycloak.init();
   }
 
   fetchFortune(retryAttempt) {
@@ -97,6 +106,17 @@ class LandingPage extends React.Component {
     this.fetchFortune(true);
   }
 
+  redirectToLogin() {
+    console.log('Attempting to redirect to the login page');
+    this.keycloak.init();
+    this.keycloak.redirectUri = 'http://localhost:3000/callback';
+    console.log('keycloak=', this.keycloak);
+    console.log('keycloak.authenticated=', this.keycloak.authenticated);
+    console.log('keycloak.authServerUrl=', this.keycloak.authServerUrl);
+    this.keycloak.login();
+    // keycloak.login();
+  }
+
   renderLoginButton() {
     if (this.state.apiAlert == true) {
       return (
@@ -106,7 +126,7 @@ class LandingPage extends React.Component {
       );
     } else {
       return (
-        <Button className="btn-round" color="primary" outline>
+        <Button className="btn-round" color="primary" outline onClick={this.redirectToLogin}>
           <i className="fa fa-sign-in fa-lg" /> Login to see the secret
         </Button>
       );
@@ -121,9 +141,9 @@ class LandingPage extends React.Component {
         <Button className="btn-round" color="primary" outline onClick={this.retryFetch}>
           <i className="fa fa-refresh fa-lg" /> Refresh
         </Button>
-    );
+      );
     }
-    
+
   }
 
   renderFortune() {

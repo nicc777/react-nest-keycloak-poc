@@ -67,7 +67,7 @@ const createCodeChallenge = (verifier) => {
 class LandingPage extends React.Component {
   constructor(props) {
     super(props);
-    console.log('props=', props);
+    console.log('LandingPage:: fetchFortune(): props=', props);
     this.state = { fortune: null, apiAlert: false, apiAlertMessage: null };
     this.retryFetch = this.retryFetch.bind(this);
     this.fetchFortune = this.fetchFortune.bind(this);
@@ -88,8 +88,8 @@ class LandingPage extends React.Component {
   }
 
   fetchFortune(retryAttempt) {
-    console.log('fetchFortune(): this.state.apiAlert=', this.state.apiAlert);
-    console.log('fetchFortune(): retryAttempt=', retryAttempt);
+    console.log('LandingPage:: fetchFortune(): this.state.apiAlert=', this.state.apiAlert);
+    console.log('LandingPage:: fetchFortune(): retryAttempt=', retryAttempt);
     try {
       const tokens = JSON.parse(this.props.sessionGet('tokens'));
       console.log({tokens});
@@ -111,23 +111,23 @@ class LandingPage extends React.Component {
         fetch('http://localhost:5000/fortune', fetchData)
           .then(response => {
             let resp = response.json();
-            console.log('resp=', resp)
+            console.log('LandingPage:: fetchFortune(): resp=', resp)
             return resp;
           })
           .then(data => {
-            console.log('data=', data);
-            if (data.statusCode >= 200 && data.statusCode < 300) {
+            console.log('LandingPage:: getAuthorizationCode(): data=', data);
+            if (data.fortuneText) {
               // success
-              this.setState({ fortune: data, apiAlert: false });
+              this.setState({ fortune: data, apiAlert: false, apiAlertMessage: null });
+              console.log('LandingPage:: fetchFortune(): API FETCH SUCCESS');
             } else {
-              // some error condition
               this.setState({apiAlert: true, apiAlertMessage: 'It appears you are not authorized. Logout and back in again.'});
               this.props.sessionRemove('tokens'); // Remove tokens since it's no longer valid
-              console.log('The server returned an error!!');
+              console.log('LandingPage:: fetchFortune(): API FETCH FAIL. HTTP Status Code: ', data.statusCode);
             }
           })
           .catch((error) => {
-            console.error('Fetch Error:', error);
+            console.error('LandingPage:: fetchFortune(): Fetch Error:', error);
             this.setState({ apiAlert: true });
           });
       }
@@ -137,7 +137,7 @@ class LandingPage extends React.Component {
   }
 
   retryFetch() {
-    console.log('retry fetch');
+    console.log('LandingPage:: retryFetch(): retry fetch');
     this.setState({ fortune: null, apiAlert: false, apiAlertMessage: null });
     this.fetchFortune(true);
   }
@@ -153,20 +153,20 @@ class LandingPage extends React.Component {
       redirect_uri: redirectUri
     });
 
-    console.log('getAuthorizationCode(): params=', params);
+    console.log('LandingPage:: getAuthorizationCode():  params=', params);
     const loginUrl = keycloakUrl + '?' + params;
     this.props.sessionSet('loginUrl', loginUrl);
     return loginUrl;
   };
 
   async redirectToLogin() {
-    console.log('Attempting to redirect to the login page');
+    console.log('LandingPage:: redirectToLogin(): Attempting to redirect to the login page');
 
 
     const verifier = createCodeVerifier();
     const challenge = createCodeChallenge(verifier);
-    console.log('verifier=', verifier);
-    console.log('challenge=', challenge);
+    console.log('LandingPage:: redirectToLogin(): verifier=', verifier);
+    console.log('LandingPage:: redirectToLogin(): challenge=', challenge);
 
     this.getAuthorizationCode(
       'http://localhost:8180/auth/realms/master/protocol/openid-connect/auth',  //keycloakUrl
@@ -262,7 +262,6 @@ class LandingPage extends React.Component {
     if (this.props.sessionGet('loginUrl')) {
       const loginUrl = this.props.sessionGet('loginUrl');
       this.props.sessionRemove('loginUrl');
-      console.log('** REDIRECT to login: ', loginUrl);
       window.location.href = loginUrl;
     }
 

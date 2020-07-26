@@ -75,3 +75,8 @@ $ npm start
 The following credits for photos from [Unsplash](https://unsplash.com/):
 
 * <span>Photo by <a href="https://unsplash.com/@shotlist?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Shotlist</a> on <a href="https://unsplash.com/s/photos/table-mountain?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+
+# References
+
+* [RFC 7516 - JSON Web Encryption (JWE)](https://tools.ietf.org/html/rfc7516)
+* [RFC 7517 - JSON Web Key (JWK)](https://tools.ietf.org/html/rfc7517)

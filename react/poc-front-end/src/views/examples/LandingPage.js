@@ -45,7 +45,55 @@ import DemoFooter from "components/Footers/DemoFooter.js";
 
 // Other
 import sessionManager from '../../hoc/session-manager';
-import Keycloak from 'keycloak-js';
+import crypto from 'crypto';
+import qs from 'querystring';
+import { Redirect } from "react-router-dom";
+
+const urlBase64 = (content) => {
+  content = content.toString('base64');
+  const urlSafeReplacements = [
+    [/\+/g, '-'],
+    [/\//g, '_'],
+    [/=/g, '']
+  ];
+
+  urlSafeReplacements.forEach(([test, replacement]) => {
+    content = content.replace(test, replacement);
+  });
+
+  return content;
+};
+
+const createCodeVerifier = () => urlBase64(crypto.randomBytes(32));
+
+const createCodeChallenge = (verifier) => {
+  const hash = crypto.createHash('sha256').update(verifier).digest();
+  return urlBase64(hash);
+};
+
+// const exchangeCodeForTokens = (keycloakUrl, redirectUri, clientId, code, verifier, removeVerifier = false) => {
+//   const body = {
+//     grant_type: 'authorization_code',
+//     client_id: clientId,
+//     code_verifier: verifier,
+//     code,
+//     redirect_uri: redirectUri
+//   };
+
+//   if (removeVerifier) {
+//     delete body.code_verifier;
+//   }
+
+//   return fetch(`${keycloakUrl}/protocol/openid-connect/token`, {
+//     body: qs.stringify(body),
+//     headers: {
+//       'Accept': 'application/json',
+//       'Content-Type': 'application/x-www-form-urlencoded'
+//     },
+//     method: 'POST',
+//     redirect: 'manual'
+//   });
+// };
 
 class LandingPage extends React.Component {
   constructor(props) {
@@ -57,16 +105,17 @@ class LandingPage extends React.Component {
     this.renderRefreshButton = this.renderRefreshButton.bind(this);
     this.renderFortune = this.renderFortune.bind(this);
     this.redirectToLogin = this.redirectToLogin.bind(this);
-    this.keycloak = Keycloak({
-      url: 'http://localhost:8180/auth/',
-      realm: 'master',
-      clientId: 'poc-front-end'
-    });
   }
 
   componentDidMount() {
-    this.fetchFortune();
-    // this.keycloak.init();
+    try {
+      const tokens = this.props.sessionGet('tokens');
+      console.log({tokens});
+      this.fetchFortune();
+    } catch (e) {
+      console.error({e});
+    }
+    
   }
 
   fetchFortune(retryAttempt) {
@@ -106,15 +155,40 @@ class LandingPage extends React.Component {
     this.fetchFortune(true);
   }
 
-  redirectToLogin() {
+
+  getAuthorizationCode = async (keycloakUrl, clientId, redirectUri, challenge) => {
+    const params = qs.stringify({
+      response_type: 'code',
+      scope: 'openid profile email',
+      client_id: clientId,
+      code_challenge: challenge,
+      code_challenge_method: 'S256',
+      redirect_uri: redirectUri
+    });
+
+    console.log('getAuthorizationCode(): params=', params);
+    const loginUrl = keycloakUrl + '?' + params;
+    this.props.sessionSet('loginUrl', loginUrl);
+    return loginUrl;
+  };
+
+  async redirectToLogin() {
     console.log('Attempting to redirect to the login page');
-    this.keycloak.init();
-    this.keycloak.redirectUri = 'http://localhost:3000/callback';
-    console.log('keycloak=', this.keycloak);
-    console.log('keycloak.authenticated=', this.keycloak.authenticated);
-    console.log('keycloak.authServerUrl=', this.keycloak.authServerUrl);
-    this.keycloak.login();
-    // keycloak.login();
+
+
+    const verifier = createCodeVerifier();
+    const challenge = createCodeChallenge(verifier);
+    console.log('verifier=', verifier);
+    console.log('challenge=', challenge);
+
+    this.getAuthorizationCode(
+      'http://localhost:8180/auth/realms/master/protocol/openid-connect/auth',  //keycloakUrl
+      'poc-front-end',                                                          // clientId 
+      'http://localhost:3000/callback',                                         // redirectUri
+      challenge                                                                 // challenge
+    );
+    this.props.sessionSet('verifier', verifier);
+    this.setState({ redirect: true });
   }
 
   renderLoginButton() {
@@ -178,10 +252,28 @@ class LandingPage extends React.Component {
     }
   }
 
+
+  renderRedirectToLogin(loginUrl) {
+    return (
+      <div>
+        <Redirect to={loginUrl} />
+      </div>
+    );
+  }
+
   render() {
 
+    if (this.props.sessionGet('loginUrl')) {
+      const loginUrl = this.props.sessionGet('loginUrl');
+      this.props.sessionRemove('loginUrl');
+      console.log('** REDIRECT to login: ', loginUrl);
+      window.location.href = loginUrl;
+    }
+
+    console.log('Final Render');
     return (
       <>
+        {/* {loginUrl ? <Redirect to="{loginUrl}">REDIRECT</Redirect> : null} */}
         <ExamplesNavbar />
         {/* <LandingPageHeader /> */}
         <div className="main">

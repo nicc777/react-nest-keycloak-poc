@@ -23,15 +23,9 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   CardTitle,
   CardImg,
   CardText,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
   Container,
   Row,
   Col,
@@ -40,7 +34,6 @@ import {
 
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
-import LandingPageHeader from "components/Headers/LandingPageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 
 // Other
@@ -71,35 +64,11 @@ const createCodeChallenge = (verifier) => {
   return urlBase64(hash);
 };
 
-// const exchangeCodeForTokens = (keycloakUrl, redirectUri, clientId, code, verifier, removeVerifier = false) => {
-//   const body = {
-//     grant_type: 'authorization_code',
-//     client_id: clientId,
-//     code_verifier: verifier,
-//     code,
-//     redirect_uri: redirectUri
-//   };
-
-//   if (removeVerifier) {
-//     delete body.code_verifier;
-//   }
-
-//   return fetch(`${keycloakUrl}/protocol/openid-connect/token`, {
-//     body: qs.stringify(body),
-//     headers: {
-//       'Accept': 'application/json',
-//       'Content-Type': 'application/x-www-form-urlencoded'
-//     },
-//     method: 'POST',
-//     redirect: 'manual'
-//   });
-// };
-
 class LandingPage extends React.Component {
   constructor(props) {
     super(props);
     console.log('props=', props);
-    this.state = { fortune: null, apiAlert: false };
+    this.state = { fortune: null, apiAlert: false, apiAlertMessage: null };
     this.retryFetch = this.retryFetch.bind(this);
     this.fetchFortune = this.fetchFortune.bind(this);
     this.renderRefreshButton = this.renderRefreshButton.bind(this);
@@ -110,20 +79,36 @@ class LandingPage extends React.Component {
   componentDidMount() {
     try {
       const tokens = this.props.sessionGet('tokens');
-      console.log({tokens});
+      console.log({ tokens });
       this.fetchFortune();
     } catch (e) {
-      console.error({e});
+      console.error({ e });
     }
-    
+
   }
 
   fetchFortune(retryAttempt) {
     console.log('fetchFortune(): this.state.apiAlert=', this.state.apiAlert);
     console.log('fetchFortune(): retryAttempt=', retryAttempt);
     try {
-      if (this.state.apiAlert == false || retryAttempt) {
-        fetch('http://localhost:5000/fortune')
+      const tokens = JSON.parse(this.props.sessionGet('tokens'));
+      console.log({tokens});
+      if (this.state.apiAlert === false || retryAttempt) {
+        const fetchData = {
+          method: 'GET', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            // 'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'bearer ' + tokens.access_token
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          // body: JSON.stringify(data) // body data type must match "Content-Type" header
+        }
+        fetch('http://localhost:5000/fortune', fetchData)
           .then(response => {
             let resp = response.json();
             console.log('resp=', resp)
@@ -136,6 +121,8 @@ class LandingPage extends React.Component {
               this.setState({ fortune: data, apiAlert: false });
             } else {
               // some error condition
+              this.setState({apiAlert: true, apiAlertMessage: 'It appears you are not authorized. Logout and back in again.'});
+              this.props.sessionRemove('tokens'); // Remove tokens since it's no longer valid
               console.log('The server returned an error!!');
             }
           })
@@ -151,7 +138,7 @@ class LandingPage extends React.Component {
 
   retryFetch() {
     console.log('retry fetch');
-    this.setState({ fortune: null, apiAlert: false });
+    this.setState({ fortune: null, apiAlert: false, apiAlertMessage: null });
     this.fetchFortune(true);
   }
 
@@ -192,10 +179,15 @@ class LandingPage extends React.Component {
   }
 
   renderLoginButton() {
-    if (this.state.apiAlert == true) {
+    if (this.state.apiAlert === true) {
+      // return (
+      //   <Button className="btn-round" color="danger" outline onClick={this.retryFetch}>
+      //     <i className="fa fa-refresh fa-lg" /> Retry connecting to the API
+      //   </Button>
+      // );
       return (
-        <Button className="btn-round" color="danger" outline onClick={this.retryFetch}>
-          <i className="fa fa-refresh fa-lg" /> Retry connecting to the API
+        <Button className="btn-round" color="primary" outline onClick={this.redirectToLogin}>
+          <i className="fa fa-sign-in fa-lg" /> Login to see the secret
         </Button>
       );
     } else {
@@ -208,7 +200,7 @@ class LandingPage extends React.Component {
   }
 
   renderRefreshButton() {
-    if (this.state.apiAlert == true) {
+    if (this.state.apiAlert === true) {
       return null;
     } else {
       return (
@@ -241,10 +233,14 @@ class LandingPage extends React.Component {
   }
 
   renderAlert() {
-    if (this.state.apiAlert == true) {
+    if (this.state.apiAlert === true) {
+      let alertMessage = 'Failed to reach the API end-point. Is it up?';
+      if (this.state.apiAlertMessage) {
+        alertMessage = this.state.apiAlertMessage;
+      }
       return (
         <Alert color="danger">
-          Failed to reach the API end-point. Is it up?
+          {alertMessage}
         </Alert>
       );
     } else {
@@ -273,8 +269,7 @@ class LandingPage extends React.Component {
     console.log('Final Render');
     return (
       <>
-        {/* {loginUrl ? <Redirect to="{loginUrl}">REDIRECT</Redirect> : null} */}
-        <ExamplesNavbar />
+ß        <ExamplesNavbar />
         {/* <LandingPageHeader /> */}
         <div className="main">
           <div className="section text-center">

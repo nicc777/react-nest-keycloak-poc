@@ -1,7 +1,6 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import sessionManager from '../hoc/session-manager';
-import Keycloak from 'keycloak-js';
 import qs from 'querystring';
 
 
@@ -40,7 +39,7 @@ class Callback extends React.Component {
     async postData(url = '', data = {}) {
         try {
             let token_data= null;
-            const response = await fetch(url, {
+            await fetch(url, {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 mode: 'cors', // no-cors, *cors, same-origin
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

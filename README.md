@@ -1,5 +1,7 @@
 # What is this all about?
 
+**Important Notice**: This project is still very much broken. I will update the notes and add more detailed documentation once all is done and working
+
 Well, I like to document everything I learn. This repo, as you therefore may have guessed, is where I show how I implemented [React](https://reactjs.org/), [Nest](https://nestjs.com/) and [Keycloak](https://www.keycloak.org/) in order to demonstrate how the React app would consume a REST API, all following an OAUTH2 [Authorization Code Grant](https://tools.ietf.org/html/rfc6749#section-4.1) with [PKCE flow](https://tools.ietf.org/html/rfc7636).
 
 # PoC Design

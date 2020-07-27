@@ -1,7 +1,10 @@
 {
     "cSpell.words": [
         "PKCE",
+        "jwcrypto",
+        "jwks",
         "mkdir",
         "openid"
-    ]
+    ],
+    "python.pythonPath": "/Users/nicocoetzee/git/GitHub_nicc777/react-nest-keycloak-poc/python/venv/bin/python3"
 }

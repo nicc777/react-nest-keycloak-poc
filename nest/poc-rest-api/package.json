@@ -23,8 +23,14 @@
   "dependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
+    "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@types/passport-jwt": "^3.0.3",
+    "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
+    "jwks-rsa": "^1.8.1",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4"

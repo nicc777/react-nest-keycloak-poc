@@ -4,6 +4,8 @@
 
 Well, I like to document everything I learn. This repo, as you therefore may have guessed, is where I show how I implemented [React](https://reactjs.org/), [Nest](https://nestjs.com/) and [Keycloak](https://www.keycloak.org/) in order to demonstrate how the React app would consume a REST API, all following an OAUTH2 [Authorization Code Grant](https://tools.ietf.org/html/rfc6749#section-4.1) with [PKCE flow](https://tools.ietf.org/html/rfc7636).
 
+**Update 2020-07-27**: I have implemented the `AuthGuard`  in branch `nest-passport-jwt-attempt-01` as per the NestJS and Auth0 examples, but every request returns an error `401`. I'm not familiar with JavaScript at all, so this is a but frustrating for me as I cant find the problem. My next action is to fall back to something I know - Python - and try again. At least I should be able to gain more insights into whats going on. This will be aimed for branch `python-jwt-attempt-01`.
+
 # PoC Design
 
 ![PoC Design](poc_design.png)

@@ -1,10 +1,8 @@
 # What is this all about?
 
-**Important Notice**: This project is still very much broken. I will update the notes and add more detailed documentation once all is done and working
-
 Well, I like to document everything I learn. This repo, as you therefore may have guessed, is where I show how I implemented [React](https://reactjs.org/), [Nest](https://nestjs.com/) and [Keycloak](https://www.keycloak.org/) in order to demonstrate how the React app would consume a REST API, all following an OAUTH2 [Authorization Code Grant](https://tools.ietf.org/html/rfc6749#section-4.1) with [PKCE flow](https://tools.ietf.org/html/rfc7636).
 
-**Update 2020-07-27**: I have implemented the `AuthGuard`  in branch `nest-passport-jwt-attempt-01` as per the NestJS and Auth0 examples, but every request returns an error `401`. I'm not familiar with JavaScript at all, so this is a but frustrating for me as I cant find the problem. ~~My next action is to fall back to something I know - Python - and try again. At least I should be able to gain more insights into whats going on. This will be aimed for branch `python-jwt-attempt-01`~~. Branch `python-jwt-attempt-01` have been merged with `master` and the Python example API works perfectly.
+**Notice**: I still need to update the detailed instruction, but all is now working.
 
 # PoC Design
 
@@ -59,6 +57,14 @@ You can now create the client by importing the `keycloak/poc-front-end.json` fil
 At this stage you can also create a user. The PoC assumes a username of `user1` with a password of `password`.
 
 ## NestJS - The REST API
+
+Enable debug for `jwks-rsa`:
+
+```bash
+$ DEBUG=jwks
+```
+
+Then:
 
 ```bash
 $ cd nest/poc-rest-api

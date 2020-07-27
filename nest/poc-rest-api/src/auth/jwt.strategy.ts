@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
 import { passportJwtSecret } from 'jwks-rsa';
 
 
@@ -15,9 +15,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         jwksUri: 'http://localhost:8180/auth/realms/master/protocol/openid-connect/certs',
       }),
 
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      audience: 'http://localhost:3000',
-      issuer: 'http://localhost:8180/auth/realms/master',
+      jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
+      // audience: 'http://localhost:5000/',
+      // issuer: 'http://localhost:8180/',
       algorithms: ['RS256'],
     });
     this.logger.log('initialized');
@@ -25,9 +25,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   private readonly logger = new Logger(JwtStrategy.name);
 
-  validate(payload: any) {
+  validate(payload: any, done: VerifiedCallback) {
     this.logger.log('called');
-    this.logger.log({payload});
-    return payload;
+    this.logger.log({ payload });
+    if (!payload) {
+      done(new UnauthorizedException(), false);
+    }
+
+    return done(null, payload);
   }
+
 }

@@ -117,9 +117,11 @@ The authentication sequence is demonstrated in the diagram below, which includes
 
 # Request Authorization Design (NestJS)
 
-The implementation follows the [passport-jwt] pattern to validate Access Tokens against known public certificates issued by the IDP (Keycloak), as illustrated by the diagram below:
+The implementation follows the [passport-jwt](http://www.passportjs.org/packages/passport-jwt/) pattern to validate Access Tokens against known public certificates issued by the IDP (Keycloak), as illustrated by the diagram below:
 
 ![NestJS Authorization Implementation](poc-NestJS-Authz-Pattern.png)
+
+**NOTE**: The `audience` and `issuer` is currently commented out as they will not validate the JWT correctly if supplied.
 
 # References
 

@@ -21,6 +21,10 @@ The PoC does not concern itself with deployment of the JavaScript application an
 
 The commands below assume a `Unix` like operating system (Linux, Mac OSX, *BSD etc.). If you are on Windows, [consider using WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) for easier testing.
 
+Below is a diagram showing how to start-up all the required services. There is more details in the sub-sections.
+
+![Start-up Sequence](start-up.png)
+
 ## Keycloak
 
 The solution is based on the [Keycloak Docker Hub](https://hub.docker.com/r/jboss/keycloak/) latest image as on 2020-07-22.
@@ -29,7 +33,6 @@ To prepare the local service, run the following commands:
 
 ```bash
 $ mkdir -p ~/tmp/keycloak-poc
-$ cd keycloak
 $ docker run -d -p 8180:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -v $HOME/tmp/keycloak-poc:/tmp --name keycloak-poc jboss/keycloak
 ```
 
@@ -106,15 +109,16 @@ $ npm install
 $ npm start
 ```
 
-# Acknowledgements
+# Authentication Sequence (React Front End) - Authorization Flow with PKCE
 
-The following credits for photos from [Unsplash](https://unsplash.com/):
+The authentication sequence is demonstrated in the diagram below, which includes a bit more detail on the logical flows inside the React application.
 
-* <span>Photo by <a href="https://unsplash.com/@shotlist?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Shotlist</a> on <a href="https://unsplash.com/s/photos/table-mountain?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+![Authorization Flow with PKCE](poc-Authz-PKCE.png)
 
 # References
 
 * [NestJS - Implementing Passport JWT](https://docs.nestjs.com/techniques/authentication#implementing-passport-jwt)
 * [Auth0 - Use Passport with NestJS](https://auth0.com/blog/developing-a-secure-api-with-nestjs-adding-authorization/#Use-Passport-with-NestJS)
+* [RFC 6749 - The OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749)
 * [RFC 7516 - JSON Web Encryption (JWE)](https://tools.ietf.org/html/rfc7516)
 * [RFC 7517 - JSON Web Key (JWK)](https://tools.ietf.org/html/rfc7517)

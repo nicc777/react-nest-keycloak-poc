@@ -268,7 +268,7 @@ class LandingPage extends React.Component {
     console.log('Final Render');
     return (
       <>
-ß        <ExamplesNavbar />
+        <ExamplesNavbar />
         {/* <LandingPageHeader /> */}
         <div className="main">
           <div className="section text-center">

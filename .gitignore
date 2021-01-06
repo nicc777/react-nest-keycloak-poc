@@ -302,3 +302,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+package-lock.json
+react/poc-front-end/package-lock.json
+nest/poc-rest-api/package-lock.json

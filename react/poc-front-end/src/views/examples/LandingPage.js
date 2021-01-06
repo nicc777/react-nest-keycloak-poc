@@ -218,7 +218,7 @@ class LandingPage extends React.Component {
         <Card style={{ width: '40rem' }}>
           <CardImg
             top
-            src={require("assets/img/fortune_cookies.jpg")}
+            src={"images/fortune_cookies.jpg"}
             alt="Fortune Cookie Image" />
           <CardBody>
             <CardTitle>Author: {this.state.fortune.fortuneAuthor}</CardTitle>

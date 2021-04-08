@@ -7,7 +7,7 @@
     "keycloak-js": "^11.0.0",
     "moment": "2.26.0",
     "node-sass": "4.14.1",
-    "nouislider": "14.5.0",
+    "nouislider": "14.6.4",
     "react": "16.13.1",
     "react-bootstrap-switch": "15.5.3",
     "react-datetime": "2.16.3",
